@@ -52,7 +52,7 @@ $(function(){
       },
       tooltip: {
          formatter: function() {
-            return '<b>'+ this.point.name +'</b>: '+ Math.round(this.y/1000,1) +'k lines';
+            return '<b>'+ this.point.name +'</b>: '+ Math.round(this.y/1000,1) +'kb';
          }
       },
       plotOptions: {
