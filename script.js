@@ -8,7 +8,7 @@ $(function(){
 
     var username = $("#username").val();
 
-    _gaq.push(['_trackEvent', 'Github', 'Graph', username]);
+    _gaq.push(['_trackPageView', '/github-language-graph/'+username]);
     
     var repos = [];
     var completed = 0;
