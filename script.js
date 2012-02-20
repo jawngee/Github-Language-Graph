@@ -2,42 +2,53 @@ var languages = {};
 var chart;
 
 $(function(){
-  $("#btn-go").click(function(){
-    $("#result").show();
-    $("#start").hide();
+	
+	var self=this;
+	
+	this.showresults=function(username)
+	{
+		$("#result").show();
+	    $("#start").hide();
 
-    var username = $("#username").val();
+	    _gaq.push(['_trackPageView', '/github-language-graph/'+username]);
 
-    _gaq.push(['_trackPageView', '/github-language-graph/'+username]);
-    
-    var repos = [];
-    var completed = 0;
-    
-    $("#result-username").text(username);
-    $("#username").val("");
-    
-    $.getJSON("https://api.github.com/users/"+username+"/repos?callback=?", function(data){
-      $(data.data).each(function(i,d){
-        repos.push(d.url+"/languages");
-      });
-      $("#result-repo-count").text(repos.length + " Repositories");
-      $(repos).each(function(i,r) {
-        $.getJSON(r+"?callback=?", function(data){
-          for(lang in data.data) {
-            var lines = data.data[lang];
-            if(!languages[lang]){
-              languages[lang] = lines;
-            } else {
-              languages[lang] += lines;
-            }
-          }
-          completed++;
-          updateLanguageGraph();
-        });
-      });
-    });
-    return false;
-  });
+	    var repos = [];
+	    var completed = 0;
+
+	    $("#result-username").text(username);
+	    $("#username").val("");
+
+	    $.getJSON("https://api.github.com/users/"+username+"/repos?callback=?", function(data){
+	      $(data.data).each(function(i,d){
+	        repos.push(d.url+"/languages");
+	      });
+	      $("#result-repo-count").text(repos.length + " Repositories");
+	      $(repos).each(function(i,r) {
+	        $.getJSON(r+"?callback=?", function(data){
+	          for(lang in data.data) {
+	            var lines = data.data[lang];
+	            if(!languages[lang]){
+	              languages[lang] = lines;
+	            } else {
+	              languages[lang] += lines;
+	            }
+	          }
+	          completed++;
+	          updateLanguageGraph();
+	        });
+	      });
+	    });
+	}
+	
+	$("#btn-go").click(function(){
+		var username = $("#username").val();
+		
+		window.location.hash='#'+username;
+		
+		self.showresults(username);
+
+		return false;
+	});
   
    chart = new Highcharts.Chart({
       chart: {
@@ -76,6 +87,8 @@ $(function(){
       }]
    });
   
+	if (window.location.hash)
+		self.showresults(window.location.hash.substr(1));
 });
 
 function updateLanguageGraph() {
